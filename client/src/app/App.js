@@ -791,6 +791,10 @@ export class App extends PureComponent {
       },
       tabLoadingState: 'shown'
     });
+
+    if (!tab.linting) {
+      this.lintTab(tab);
+    }
   }
 
   /**

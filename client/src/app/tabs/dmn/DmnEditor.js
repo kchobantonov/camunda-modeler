@@ -391,7 +391,8 @@ export class DmnEditor extends CachedComponent {
         defaultCopyCutPaste: true,
         defaultUndoRedo: true,
         removeSelected: true,
-        selectAll: true
+        selectAll: true,
+        inputActive: true
       });
 
       editMenu = getDmnLiteralExpressionEditMenu(newState);

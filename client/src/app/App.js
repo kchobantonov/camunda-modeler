@@ -1654,6 +1654,11 @@ export class App extends PureComponent {
       return this.reopenLastTab();
     }
 
+    if (action === 'reveal-file') {
+      const { path } = activeTab.file;
+      return this.getGlobal('dialog').showFileExplorerDialog({ path });
+    }
+
     if (action === 'show-shortcuts') {
       return this.showShortcuts();
     }

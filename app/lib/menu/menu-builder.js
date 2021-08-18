@@ -86,6 +86,8 @@ class MenuBuilder {
         .appendSeparator()
         .appendContextCloseTab()
         .appendSeparator()
+        .appendRevealInFileExplorerTab()
+        .appendSeparator()
         .appendReopenLastTab();
     }
 
@@ -615,6 +617,19 @@ class MenuBuilder {
       enabled: canSwitchTab(this.options.state),
       click: function() {
         app.emit('menu:action', 'close-other-tabs', attrs);
+      }
+    }));
+
+    return this;
+  }
+
+  appendRevealInFileExplorerTab() {
+    const attrs = this.options.attrs;
+
+    this.menu.append(new MenuItem({
+      label: 'Reveal in File Explorer',
+      click: function() {
+        app.emit('menu:action', 'reveal-file', attrs);
       }
     }));
 

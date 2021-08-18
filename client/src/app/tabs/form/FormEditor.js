@@ -11,6 +11,7 @@
 import React, { createRef } from 'react';
 
 import {
+  debounce,
   isFunction,
   isNil
 } from 'min-dash';
@@ -37,6 +38,8 @@ import {
   isKnownEngineProfile
 } from '../EngineProfile';
 
+const LOW_PRIORITY = 500;
+
 
 export class FormEditor extends CachedComponent {
   constructor(props) {
@@ -47,6 +50,8 @@ export class FormEditor extends CachedComponent {
     this.state = {
       importing: false
     };
+
+    this.handleLinting = debounce(this.handleLinting.bind(this), 300);
   }
 
   componentDidMount() {
@@ -187,6 +192,8 @@ export class FormEditor extends CachedComponent {
       'propertiesPanel.focusout',
       'selection.changed'
     ].forEach((event) => form[ fn ](event, this.handleChanged));
+
+    form[ fn ]('commandStack.changed', LOW_PRIORITY, this.handleLinting);
   }
 
   handleChanged = () => {
@@ -225,6 +232,14 @@ export class FormEditor extends CachedComponent {
         engineProfile
       });
     }
+  }
+
+  handleLinting = () => {
+    const { form } = this.getCached();
+
+    const { schema: contents } = form._getState();
+
+    this.props.onAction('lint', { contents });
   }
 
   isDirty() {

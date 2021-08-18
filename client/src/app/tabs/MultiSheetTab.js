@@ -345,6 +345,15 @@ export class MultiSheetTab extends CachedComponent {
       return onAction('close-tab', { tabId: tab.id });
     }
 
+    if (action === 'lint') {
+      const { contents } = options;
+
+      return onAction('lint-tab', {
+        tab,
+        contents
+      });
+    }
+
     return onAction(action, options);
   }
 

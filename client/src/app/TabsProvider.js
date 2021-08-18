@@ -40,6 +40,8 @@ import {
   generateId
 } from '../util';
 
+import FormLinter from './tabs/form/FormLinter';
+
 const createdByType = {};
 
 const noopProvider = {
@@ -317,6 +319,9 @@ export default class TabsProvider {
             label: 'Create new Form (Camunda Platform or Cloud)',
             action: 'create-form'
           };
+        },
+        getLinter() {
+          return FormLinter;
         }
       }
     };

@@ -40,7 +40,7 @@ import {
   generateId
 } from '../util';
 
-import FormLinter from './tabs/form/FormLinter';
+import FormLinter from './tabs/form/linting/FormLinter';
 
 const createdByType = {};
 

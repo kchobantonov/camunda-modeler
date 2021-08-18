@@ -59,7 +59,7 @@ export default class FormLinter {
         results.push({
           id,
           label: label || textToLabel(text),
-          message: `Form field of type <${ type }> not supported in ${ executionPlatform } ${ executionPlatformVersion }`,
+          message: `Form field of type <${ type }> not supported by ${ executionPlatform } ${ executionPlatformVersion }`,
           category: 'error'
         });
       }

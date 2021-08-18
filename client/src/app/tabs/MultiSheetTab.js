@@ -406,6 +406,7 @@ export class MultiSheetTab extends CachedComponent {
             setConfig={ this.props.setConfig }
             getPlugins={ this.props.getPlugins }
             onWarning={ this.handleWarning }
+            linting={ tab.linting }
           />
         </TabContainer>
 

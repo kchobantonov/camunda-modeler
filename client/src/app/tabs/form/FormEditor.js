@@ -8,7 +8,7 @@
  * except in compliance with the MIT License.
  */
 
-import React, { createRef } from 'react';
+import React, { createRef, Fragment } from 'react';
 
 import {
   debounce,
@@ -38,6 +38,12 @@ import {
   isKnownEngineProfile
 } from '../EngineProfile';
 
+import { Linting } from '../Linting';
+
+import Panel from '../panel/Panel';
+
+import LintingTab from '../panel/tabs/LintingTab';
+
 const LOW_PRIORITY = 500;
 
 
@@ -51,7 +57,7 @@ export class FormEditor extends CachedComponent {
       importing: false
     };
 
-    this.handleLinting = debounce(this.handleLinting.bind(this), 300);
+    this.handleLintingDebounced = debounce(this.handleLinting.bind(this), 300);
   }
 
   componentDidMount() {
@@ -193,7 +199,7 @@ export class FormEditor extends CachedComponent {
       'selection.changed'
     ].forEach((event) => form[ fn ](event, this.handleChanged));
 
-    form[ fn ]('commandStack.changed', LOW_PRIORITY, this.handleLinting);
+    form[ fn ]('commandStack.changed', LOW_PRIORITY, this.handleLintingDebounced);
   }
 
   handleChanged = () => {
@@ -235,9 +241,16 @@ export class FormEditor extends CachedComponent {
   }
 
   handleLinting = () => {
-    const { form } = this.getCached();
+    const {
+      engineProfile,
+      form
+    } = this.getCached();
 
-    const { schema: contents } = form._getState();
+    if (!engineProfile) {
+      return;
+    }
+
+    const contents = form.getSchema();
 
     this.props.onAction('lint', { contents });
   }
@@ -281,6 +294,17 @@ export class FormEditor extends CachedComponent {
     const { form } = this.getCached();
 
     const editorActions = form.get('editorActions');
+
+    // TODO: make this an editor action
+    if (action === 'selectElement') {
+      const { form } = this.getCached();
+
+      const { id } = context;
+
+      const formField = form.get('formFieldRegistry').get(id);
+
+      form.get('selection').set(formField);
+    }
 
     if (editorActions.isRegistered(action)) {
       return editorActions.trigger(action, context);
@@ -326,6 +350,13 @@ export class FormEditor extends CachedComponent {
   render() {
     const { engineProfile } = this.getCached();
 
+    const {
+      layout,
+      linting = [],
+      onAction,
+      onLayoutChanged
+    } = this.props;
+
     const { importing } = this.state;
 
     return (
@@ -342,6 +373,23 @@ export class FormEditor extends CachedComponent {
           type="form"
           engineProfile={ engineProfile }
           setEngineProfile={ this.setEngineProfile } />
+
+        {
+          engineProfile && <Fragment>
+            <Panel
+              layout={ layout.panel }
+              onLayoutChanged={ this.handleLayoutChanged } />
+            <LintingTab
+              layout={ layout }
+              linting={ linting }
+              onAction={ onAction }
+              onLayoutChanged={ onLayoutChanged } />
+            <Linting
+              layout={ layout }
+              linting={ linting }
+              onLayoutChanged={ onLayoutChanged } />
+          </Fragment>
+        }
       </div>
     );
   }

@@ -50,23 +50,31 @@ export default class FormLinter {
     return schema.components.reduce((results, formField) => {
       const {
         id,
+        label,
+        text,
         type
       } = formField;
 
       if (!types.includes(type)) {
         results.push({
-          id: id,
-          message: `Form field of type <${ type }> not supported in ${ executionPlatform } ${ executionPlatformVersion }.`
-        });
-      } else if (formField.values && !formField.values.length) {
-        results.push({
-          id: id,
-          path: [ 'values' ],
-          message: `Form field of type <${ type }> has no configured values.`
+          id,
+          label: label || textToLabel(text),
+          message: `Form field of type <${ type }> not supported in ${ executionPlatform } ${ executionPlatformVersion }`,
+          category: 'error'
         });
       }
 
       return results;
     }, []);
   }
+}
+
+// helpers //////////
+
+function textToLabel(text = '...') {
+  if (text.length > 10) {
+    return `${ text.substring(0, 30) }...`;
+  }
+
+  return text;
 }

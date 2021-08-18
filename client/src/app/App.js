@@ -17,6 +17,7 @@ import {
   debounce,
   forEach,
   isString,
+  isUndefined,
   reduce
 } from 'min-dash';
 
@@ -1429,6 +1430,29 @@ export class App extends PureComponent {
     });
   };
 
+  togglePanel = (options = {}) => {
+    const { layout } = this.state;
+
+    const { panel = {} } = layout;
+
+    let {
+      open,
+      tab
+    } = options;
+
+    if (isUndefined(open)) {
+      open = !panel.open;
+    }
+
+    this.handleLayoutChanged({
+      panel: {
+        ...panel,
+        open,
+        tab: tab || panel.tab
+      }
+    });
+  };
+
   closeTabs = (matcher) => {
 
     const {
@@ -1609,6 +1633,10 @@ export class App extends PureComponent {
       } = options;
 
       return this.lintTab(tab, contents);
+    }
+
+    if (action === 'toggle-panel') {
+      this.togglePanel(options);
     }
 
     if (action === 'select-tab') {
